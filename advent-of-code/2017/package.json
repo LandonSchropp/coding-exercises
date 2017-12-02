@@ -1,0 +1,8 @@
+{
+  "name": "advent-of-code-2017",
+  "description": "My solutions to the Advent of Code 2017 problems",
+  "repository": "https://github.com/LandonSchropp/advent-of-code-2017",
+  "author": "Landon Schropp <schroppl@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true
+}
