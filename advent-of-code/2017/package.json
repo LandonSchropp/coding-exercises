@@ -8,6 +8,8 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "eslint": "^4.12.1",
+    "eslint-config-optimum-energy": "^0.3.0",
     "ramda": "^0.25.0"
   },
   "devDependencies": {
