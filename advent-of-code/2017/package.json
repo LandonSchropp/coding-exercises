@@ -16,6 +16,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "test": "mocha -r babel-register spec/**/*.js"
+    "test": "mocha -r babel-register spec/**/*.js",
+    "puzzle": "babel-node index.js"
   }
 }

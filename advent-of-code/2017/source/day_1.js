@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
 // String -> Integer
-export default R.pipe(
+export const part1 = R.pipe(
 
   // Instead of mucking around with complicated regular expressions, simply duplicate the last
   // character.
