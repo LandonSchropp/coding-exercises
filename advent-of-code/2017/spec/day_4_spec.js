@@ -1,4 +1,4 @@
-import { isValid, part1 } from '../source/day_4';
+import { isValid, part1, isValidWithAnagram } from '../source/day_4';
 import { expect } from 'chai';
 
 describe("isValid", () => {
@@ -25,12 +25,26 @@ describe("isValid", () => {
   });
 });
 
-describe("part1", () => {
+describe("isvalidWithAnagram", () => {
 
-  context("when the example is provided", () => {
+  context("when the words contain no duplicates with anagrams", () => {
 
-    it("returns the expected value", () => {
-      expect(part1("aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa")).to.eq(2);
+    it("returns true", () => {
+      expect(isValidWithAnagram([ 'abcde', 'fghij' ])).to.eq(true);
+    });
+  });
+
+  context("when the words contain a duplicate as an anagram", () => {
+
+    it("returns false", () => {
+      expect(isValidWithAnagram([ 'abcde', 'xyz', 'ecdab' ])).to.eq(false);
+    });
+  });
+
+  context("when the words contain duplicate letters, but not as anagrams", () => {
+
+    it("returns true", () => {
+      expect(isValidWithAnagram([ 'a', 'ab', 'abc', 'abd', 'abf', 'abj' ])).to.eq(true);
     });
   });
 });
