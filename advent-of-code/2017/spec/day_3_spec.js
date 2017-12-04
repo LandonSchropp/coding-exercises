@@ -11,6 +11,7 @@ describe("part1", () => {
       expect(part1("2")).to.eq(1);
       expect(part1("12")).to.eq(3);
       expect(part1("23")).to.eq(2);
+      expect(part1("25")).to.eq(4);
       expect(part1("1024")).to.eq(31);
     });
   });
