@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { part1 } from '../source/day_3';
+import { part1, part2 } from '../source/day_3';
 
 describe("part1", () => {
 
@@ -13,6 +13,19 @@ describe("part1", () => {
       expect(part1("23")).to.eq(2);
       expect(part1("25")).to.eq(4);
       expect(part1("1024")).to.eq(31);
+    });
+  });
+});
+
+describe("part2", () => {
+
+  context("when the sample input is provided", () => {
+
+    it("returns the expected result", () => {
+      expect(part2("4")).to.eq(5);
+      expect(part2("5")).to.eq(10);
+      expect(part2("11")).to.eq(23);
+      expect(part2("747")).to.eq(806);
     });
   });
 });
