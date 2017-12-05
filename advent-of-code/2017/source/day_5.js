@@ -5,7 +5,7 @@ const parse = R.pipe(
   R.map(parseInt)
 );
 
-const performSteps = (jumps) => {
+const performSteps = R.curry((incrementFunction, jumps) => {
   jumps = R.clone(jumps);
 
   let step = 0;
@@ -13,15 +13,20 @@ const performSteps = (jumps) => {
 
   while (index >= 0 && index < jumps.length) {
     let jump = jumps[index];
-    jumps[index] = jumps[index] + 1;
+    jumps[index] = jump + incrementFunction(jump);
     index = index + jump;
     step++;
   }
 
   return step;
-};
+});
 
 export const part1 = R.pipe(
   parse,
-  performSteps
+  performSteps(R.always(1))
+);
+
+export const part2 = R.pipe(
+  parse,
+  performSteps(jump => jump >= 3 ? -1 : 1)
 );
