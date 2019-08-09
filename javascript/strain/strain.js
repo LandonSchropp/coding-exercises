@@ -9,10 +9,12 @@ const reduce = (collection, iteratee, accumulator) => {
   return accumulator;
 }
 
-export const keep = () => {
-  throw new Error("Remove this statement and implement this function");
+export const keep = (collection, predicate) => {
+  return reduce(collection, (accumulator, element) => {
+    return predicate(element) ? [ ...accumulator, element ] : accumulator;
+  }, []);
 };
 
-export const discard = () => {
-  throw new Error("Remove this statement and implement this function");
+export const discard = (collection, predicate) => {
+  return keep(collection, element => !predicate(element));
 };
