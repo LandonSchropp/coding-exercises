@@ -4,12 +4,7 @@ defmodule Exercise do
   """
 
   @doc """
-  Sums three numbers together.
-
-  ## Examples
-
-      Exercise.
-
+  Sums the squares of the two largest numbers of provided arguments.
   """
   def sum(a, b, c) do
     [ first, second ] = Enum.take(Enum.sort([ a, b, c ]), -2)
