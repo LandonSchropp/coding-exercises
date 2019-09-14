@@ -1,0 +1,25 @@
+{
+  "name": "advent-of-code-2017",
+  "description": "My solutions to the Advent of Code 2017 problems",
+  "repository": "https://github.com/LandonSchropp/advent-of-code-2017",
+  "author": "Landon Schropp <schroppl@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-exponentiation-operator": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.12.1",
+    "eslint-config-optimum-energy": "^0.3.0",
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha -r babel-register spec/**/*.js",
+    "puzzle": "babel-node index.js"
+  }
+}
