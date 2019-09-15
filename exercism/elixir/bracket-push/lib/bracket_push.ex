@@ -17,23 +17,23 @@ defmodule BracketPush do
     |> check_brackets([])
   end
 
+  defp check_brackets([], stack) do
+    Enum.empty? stack
+  end
+
   # Recursive case
   defp check_brackets(characters, stack) do
 
-    if Enum.empty?(characters) do
-      Enum.empty? stack
-    else
-      [ head | characters ] = characters
+    [ head | characters ] = characters
 
-      cond do
-        opening_bracket? head ->
-          check_brackets(characters, [ head | stack ])
-        Enum.empty?(stack) ->
-          false
-        true ->
-          [ opening_bracket | stack ] = stack
-          head == Map.fetch!(@brackets, opening_bracket) && check_brackets(characters, stack)
-      end
+    cond do
+      opening_bracket? head ->
+        check_brackets(characters, [ head | stack ])
+      Enum.empty?(stack) ->
+        false
+      true ->
+        [ opening_bracket | stack ] = stack
+        head == Map.fetch!(@brackets, opening_bracket) && check_brackets(characters, stack)
     end
   end
 
