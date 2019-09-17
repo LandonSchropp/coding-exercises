@@ -9,9 +9,11 @@ defmodule ListOps do
   def count([]), do: 0
   def count([ _ | tail ]), do: 1 + count(tail)
 
+  # Recurses the list and reverses it by passing the resulted reversed list as a parameter.
   @spec reverse(list) :: list
-  def reverse(l) do
-  end
+  def reverse(list), do: reverse(list, [])
+  defp reverse([], reversed_list), do: reversed_list
+  defp reverse([ head | tail ], reversed_list), do: reverse(tail, [ head | reversed_list ])
 
   @spec map(list, (any -> any)) :: list
   def map(l, f) do
