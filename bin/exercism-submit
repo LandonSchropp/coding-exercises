@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ "$#" != 1 ]; then
+  echo "Submits an exercise. This script assumes the exercise was written in Elixir."
+  echo
+  echo "Usage: $0 <exercise-name>"
+  exit 1
+fi
+
+DIRECTORY=$(realpath "$(dirname "$0")/../exercism/elixir/$1")
+
+if [ ! -d "$DIRECTORY" ]; then
+  echo "Couldn't find an exercise at $DIRECTORY."
+  exit 1
+fi
+
+cd "$DIRECTORY"
+exercism submit lib/*
+exercism open .
