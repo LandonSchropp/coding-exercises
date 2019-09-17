@@ -5,9 +5,9 @@ defmodule ListOps do
   def count([ _ | tail ]), do: 1 + count(tail)
 
   @spec reverse(list) :: list
-  def reverse(list), do: reverse(list, [])
-  defp reverse([], reversed_list), do: reversed_list
-  defp reverse([ head | tail ], reversed_list), do: reverse(tail, [ head | reversed_list ])
+  def reverse(list, accumulator \\ [])
+  def reverse([], accumulator), do: accumulator
+  def reverse([ head | tail ], accumulator), do: reverse(tail, [ head | accumulator ])
 
   @spec map(list, (any -> any)) :: list
   def map([], _), do: []
@@ -22,7 +22,7 @@ defmodule ListOps do
 
   @type acc :: any
   @spec reduce(list, acc, (any, acc -> acc)) :: acc
-  def reduce([], accumulator, iteratee), do: accumulator
+  def reduce([], accumulator, _), do: accumulator
 
   def reduce([ head | tail ], accumulator, iteratee) do
     reduce(tail, iteratee.(head, accumulator), iteratee)
