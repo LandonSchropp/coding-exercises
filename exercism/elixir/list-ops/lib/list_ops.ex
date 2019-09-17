@@ -17,7 +17,8 @@ defmodule ListOps do
   def filter([], _), do: []
 
   def filter([ head | tail ], iteratee) do
-    (if iteratee.(head), do: [ head ], else: []) ++ filter(tail, iteratee)
+    accumulator = filter(tail, iteratee)
+    if iteratee.(head), do: [ head | accumulator ], else: accumulator
   end
 
   @type acc :: any
