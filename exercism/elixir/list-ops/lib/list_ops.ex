@@ -20,7 +20,10 @@ defmodule ListOps do
   def map([ head | tail ], iteratee), do: [ iteratee.(head) | map(tail, iteratee) ]
 
   @spec filter(list, (any -> as_boolean(term))) :: list
-  def filter(l, f) do
+  def filter([], _), do: []
+
+  def filter([ head | tail ], iteratee) do
+    (if iteratee.(head), do: [ head ], else: []) ++ filter(tail, iteratee)
   end
 
   @type acc :: any
