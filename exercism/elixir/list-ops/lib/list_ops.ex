@@ -16,8 +16,8 @@ defmodule ListOps do
   defp reverse([ head | tail ], reversed_list), do: reverse(tail, [ head | reversed_list ])
 
   @spec map(list, (any -> any)) :: list
-  def map(l, f) do
-  end
+  def map([], _), do: []
+  def map([ head | tail ], iteratee), do: [ iteratee.(head) | map(tail, iteratee) ]
 
   @spec filter(list, (any -> as_boolean(term))) :: list
   def filter(l, f) do
