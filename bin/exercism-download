@@ -18,8 +18,13 @@ fi
 DIRECTORY=$(exercism download --exercise="$1" --track=elixir 2>&1 | tail -1)
 cd "$DIRECTORY"
 
+# Remove all of the pending tags from the tests.
+for path in test/*; do
+  sed -i '' '/@tag :pending/d' "$path"
+done
+
 # Add the directory to Git.
 git add . &> /dev/null
-git commit -m "Added Exercism $1 exercise" &> /dev/null
+git commit -m "Add Exercism $1 exercise" &> /dev/null
 
 echo "⬇️  Downloaded exercise to $DIRECTORY!"
