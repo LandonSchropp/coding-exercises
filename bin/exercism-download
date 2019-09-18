@@ -9,10 +9,17 @@ if [ "$#" != 1 ]; then
   exit 1
 fi
 
+if [ -d "$(dirname "$0")/../exercism/elixir/$1" ]; then
+  echo "⛔️ You've already downloaded the $1 exercise."
+  exit 1
+fi
+
 # Download the exercise.
-DIRECTORY=$(exercism download --exercise="$1" --track=elixir | tail -n 1)
+DIRECTORY=$(exercism download --exercise="$1" --track=elixir 2>&1 | tail -1)
 cd "$DIRECTORY"
 
 # Add the directory to Git.
-git a .
-git c -m "Added $1 Exercism exercise"
+git add . &> /dev/null
+git commit -m "Added Exercism $1 exercise" &> /dev/null
+
+echo "⬇️  Downloaded exercise to $DIRECTORY!"
