@@ -27,4 +27,4 @@ done
 git add . &> /dev/null
 git commit -m "Add Exercism $1 exercise" &> /dev/null
 
-echo "⬇️  Downloaded exercise to $DIRECTORY!"
+echo "⬇️  Downloaded exercise to $DIRECTORY."
