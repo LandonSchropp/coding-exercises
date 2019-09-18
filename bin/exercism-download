@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ "$#" != 1 ]; then
+  echo "Downloads an exercise in the Elixir track and prepares the directory."
+  echo
+  echo "Usage: $0 <exercise-name>"
+  exit 1
+fi
+
+# Download the exercise.
+DIRECTORY=$(exercism download --exercise="$1" --track=elixir | tail -n 1)
+cd "$DIRECTORY"
+
+# Add the directory to Git.
+git a .
+git c -m "Added $1 Exercism exercise"
