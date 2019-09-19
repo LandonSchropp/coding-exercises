@@ -12,7 +12,7 @@ defmodule RobotSimulator do
   Valid directions are: `:north`, `:east`, `:south`, `:west`
   """
   @spec create(direction :: atom, position :: {integer, integer}) :: any
-  def create(direction \\ nil, position \\ nil)
+  def create(direction \\ :north, position \\ { 0, 0 })
 
   # Validate the direction and position.
   def create(direction, _) when direction not in @directions, do: @invalid_direction
@@ -41,18 +41,18 @@ defmodule RobotSimulator do
   @doc """
   Turns a robot to the right.
   """
-  def turn_right({ direction, position }), do: { rotate(direction, 1), position }
+  def turn_right({ direction, position }), do: { Direction.rotate(direction, 1), position }
 
   @doc """
   Turns a robot to the left.
   """
-  def turn_left({ direction, position }), do: { rotate(direction, -1), position }
+  def turn_left({ direction, position }), do: { Direction.rotate(direction, -1), position }
 
   @doc """
   Advances a robot forward one space.
   """
   def advance({ direction, { x, y } }) do
-    { vector_x, vector_y } = direction_to_vector(direction)
+    { vector_x, vector_y } = Direction.to_vector(direction)
     { direction, { x + vector_x, y + vector_y } }
   end
 
@@ -65,11 +65,11 @@ defmodule RobotSimulator do
 
   # Sanitization: Validate the instructions and break them into a list.
   def simulate(robot, instructions) when is_binary(instructions) do
-    # if String.match? instructions, ~r/[^LRA]/
-    #   @invalid_instruction
-    # else
-    #   simulate(robot, String.graphemes(instructions))
-    # end
+    if String.match? instructions, ~r/[^LRA]/ do
+      @invalid_instruction
+    else
+      simulate(robot, String.graphemes(instructions))
+    end
   end
 
   # Base case: There are no more instructions.
@@ -79,34 +79,4 @@ defmodule RobotSimulator do
   def simulate(robot, [ "L" | tail ]), do: simulate(turn_left(robot), tail)
   def simulate(robot, [ "R" | tail ]), do: simulate(turn_right(robot), tail)
   def simulate(robot, [ "A" | tail ]), do: simulate(advance(robot), tail)
-
-  # Converts a direction to its index in the directions tuple.
-  defp direction_to_index(direction) do
-    Enum.find_index(@directions, fn element -> element == direction end)
-  end
-
-  # Converts an index to a direction.
-  defp index_to_direction(index) do
-    elem(@directions, Integer.mod(index, length(@directions)))
-  end
-
-  # Rotates a direction by the given number of turns. Positive numbers represent right turns and
-  # negative numbers represent left turns.
-  defp rotate(direction, turns) do
-    direction
-    |> direction_to_index
-    |> (fn index -> index + turns end).()
-    |> index_to_direction
-  end
-
-  # Converts a direction index to a vector.
-  defp direction_to_vector(direction) do
-    index = direction_to_index(direction)
-
-    oscillate = fn index ->
-      rem(index, 2) + div(index, 2) * -2
-    end
-
-    { oscillate.(index), oscillate.(Integer.mod(index - 1, 4)) }
-  end
 end
