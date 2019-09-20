@@ -1,0 +1,8 @@
+# Ignore Exercism boilerplate files
+# NOTE: There doesn't seem to be a way to scope these to the exercism directory.
+README.md
+.gitignore
+.exercism/metadata.json
+test/test_helper.exs
+.formatter.exs
+mix.exs
