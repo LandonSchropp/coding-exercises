@@ -1,8 +1,5 @@
 defmodule GameTest do
   use ExUnit.Case
-
-  # NOTE: The specification does not state that we need to worry about a game that's invalidly long,
-  # so I'm ignoring the possibility.
   describe "over?" do
 
     test "returns false when the game has less than ten frames" do

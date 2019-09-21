@@ -1,6 +1,12 @@
 defmodule Game do
   import Frame
 
+  @doc """
+  Returns true when a game is over.
+
+  NOTE: The specification does not state that we need to worry about a game that's invalidly long,
+  so I'm ignoring the possibility.
+  """
   def over?(frames, count \\ 0)
 
   # Twelve frames
