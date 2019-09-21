@@ -1,26 +1,6 @@
 defmodule FrameTest do
   use ExUnit.Case
 
-  # %{ score: 43, active_strikes: 1, active_spares: 1, frame: 1, frame_complete: false }
-  describe "complete?" do
-
-    test "returns true when when the frame is a strike" do
-      assert Frame.complete? [ 10 ]
-    end
-
-    test "returns true when the frame has two rolls" do
-      assert Frame.complete? [ 5, 4 ]
-    end
-
-    test "returns false when the frame has one roll" do
-      refute Frame.complete? [ 5 ]
-    end
-
-    test "returns false when the frame has no rolls" do
-      refute Frame.complete? []
-    end
-  end
-
   describe "chunk" do
 
     test "returns an empty list when the rolls list is empty" do
@@ -100,6 +80,30 @@ defmodule FrameTest do
       assert Frame.spare?([ 0, 10 ])
       assert Frame.spare?([ 9, 1 ])
       assert Frame.spare?([ 5, 5 ])
+    end
+  end
+
+  describe "open?" do
+
+    test "returns false when the frame is empty" do
+      refute Frame.open?([])
+    end
+
+    test "returns false when the frame only contains one value" do
+      refute Frame.open?([ 0 ])
+      refute Frame.open?([ 5 ])
+      refute Frame.open?([ 10 ])
+    end
+
+    test "returns false when the frame is a spare" do
+      refute Frame.open?([ 0, 10 ])
+      refute Frame.open?([ 5, 5 ])
+    end
+
+    test "returns true when the frame contains two values and is not a spare" do
+      assert Frame.open?([ 0, 9 ])
+      assert Frame.open?([ 5, 4 ])
+      assert Frame.open?([ 8, 1 ])
     end
   end
 end

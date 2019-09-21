@@ -7,7 +7,7 @@ defmodule Game do
   def over?([ ten, eleven, _ ], 9), do: strike?(ten) && strike?(eleven)
 
   # Eleven frames
-  def over?([ ten, eleven ], 9), do: strike?(ten) && length(eleven) == 2 || spare?(ten)
+  def over?([ ten, eleven ], 9), do: strike?(ten) && (spare?(eleven) || open?(eleven)) || spare?(ten)
 
   # Ten frames
   def over?([ ten ], 9), do: !Frame.strike?(ten) && !Frame.spare?(ten)
