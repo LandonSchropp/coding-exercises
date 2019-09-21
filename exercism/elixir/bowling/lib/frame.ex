@@ -11,6 +11,14 @@ defmodule Frame do
   def chunk([ first | [ second | tail ] ]), do: [ [ first, second ] | chunk(tail) ]
 
   @doc """
+  Returns the value of the rolls disregarding any other frames.
+  """
+  def value(rolls)
+  def value([]), do: 0
+  def value([ roll ]), do: roll
+  def value([ first_roll, second_roll ]), do: first_roll + second_roll
+
+  @doc """
   Returns true if all pins were knocked down on the first roll.
   """
   def strike?([ 10 ]), do: true

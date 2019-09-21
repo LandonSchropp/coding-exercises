@@ -38,6 +38,26 @@ defmodule FrameTest do
     end
   end
 
+  describe "value" do
+
+    test "returns 0 when the frame has no rolls" do
+      assert Frame.value([]) == 0
+    end
+
+    test "returns the value of the first roll when the frame has one roll" do
+      assert Frame.value([ 0 ]) == 0
+      assert Frame.value([ 5 ]) == 5
+      assert Frame.value([ 10 ]) == 10
+    end
+
+    test "returns the sum of the rolls when the frame has two rolls" do
+      assert Frame.value([ 0, 0 ]) == 0
+      assert Frame.value([ 0, 10 ]) == 10
+      assert Frame.value([ 5, 0 ]) == 5
+      assert Frame.value([ 5, 5 ]) == 10
+    end
+  end
+
   describe "strike?" do
 
     test "returns false when the frame is empty" do
