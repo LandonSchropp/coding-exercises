@@ -19,7 +19,7 @@ defmodule FrameTest do
       assert Frame.chunk([ 10 ]) == [ [ 10 ] ]
     end
 
-    test "returns one frame when the rolls contain more than one frame" do
+    test "returns multiple frames when the rolls contain more than one frame" do
       assert Frame.chunk([ 0, 0, 0, 0, 0, 0 ]) == [ [ 0, 0 ], [ 0, 0 ], [ 0, 0 ] ]
       assert Frame.chunk([ 5, 4, 3, 2, 1, 0 ]) == [ [ 5, 4 ], [ 3, 2 ], [ 1, 0 ] ]
       assert Frame.chunk([ 6, 4, 7, 3, 8, 2 ]) == [ [ 6, 4 ], [ 7, 3 ], [ 8, 2 ] ]
@@ -35,6 +35,13 @@ defmodule FrameTest do
         [ 10 ],
         [ 0 ]
       ]
+    end
+
+    test "returns the bonus rolls in an extra frame" do
+      assert Frame.at(Frame.chunk(List.duplicate(0, 18) ++ [ 10, 5, 5 ])) == [ 5, 5 ]
+      assert Frame.at(Frame.chunk(List.duplicate(0, 18) ++ [ 10, 10, 10 ])) == [ 10, 10 ]
+      assert Frame.at(Frame.chunk(List.duplicate(0, 18) ++ [ 0, 10, 5 ])) == [ 5 ]
+      assert Frame.at(Frame.chunk(List.duplicate(0, 18) ++ [ 5, 5, 2 ])) == [ 2 ]
     end
   end
 
