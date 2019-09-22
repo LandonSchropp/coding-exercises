@@ -2,6 +2,7 @@ defmodule Bowling do
   @negative_roll_error { :error, "Negative roll is invalid" }
   @too_many_pins_error { :error, "Pin count exceeds pins on the lane" }
   @game_over_error { :error, "Cannot roll after game is over" }
+  @game_not_over_error { :error, "Score cannot be taken until the end of the game" }
 
   @doc """
   Creates a new game of bowling that can be used to store the results of the game.
@@ -47,26 +48,44 @@ defmodule Bowling do
   it returns a helpful message.
   """
   @spec score(any) :: integer | String.t()
-  def score(rolls, frame \\ 0)
+  def score(rolls, frame \\ 1)
 
-  # If there are no more rolls, but we haven't finished ten complete frames, then the game is not
-  # complete.
-
-  # When we've finished 10 complete frames, the game is over.
-  def score(_, 10), do: 0
-
-  # Strike
-  def score([ 10, roll_2, roll_3 | rolls ], frame) do
-    10 + roll_2 + roll_3 + score([ roll_2, roll_3 | rolls ], frame + 1)
+  # Strike (last frame)
+  def score([ 10, roll_2, roll_3 ], 10) do
+    10 + roll_2 + roll_3
   end
 
-  # Spare
-  def score([ roll_1, roll_2, roll_3 | rolls ], frame) when (roll_1 + roll_2) == 10 do
-    10 + roll_3 + score([ roll_3 | rolls ], frame + 1)
+  # Spare (last frame)
+  def score([ roll_1, roll_2, roll_3 ], 10) when roll_1 + roll_2 == 10 do
+    10 + roll_3 * 2
   end
 
-  # Open
-  def score([ roll_1, roll_2 | rolls ], frame) do
-    roll_1 + roll_2 + score(rolls, frame + 1)
+  # Open (last frame)
+  def score([ roll_1, roll_2 ], 10) when roll_1 + roll_2 < 10  do
+    roll_1 + roll_2
   end
+
+  # Strike (not last frame)
+  def score([ 10, roll_2, roll_3 | rolls ], frame) when frame < 10 do
+    add_scores 10 + roll_2 + roll_3, score([ roll_2, roll_3 | rolls ], frame + 1)
+  end
+
+  # Spare (not last frame)
+  def score([ roll_1, roll_2, roll_3 | rolls ], frame) when (roll_1 + roll_2) == 10 and frame < 10 do
+    add_scores 10 + roll_3, score([ roll_3 | rolls ], frame + 1)
+  end
+
+  # Open (not last frame)
+  def score([ roll_1, roll_2 | rolls ], frame) when frame < 10 do
+    add_scores roll_1 + roll_2, score(rolls, frame + 1)
+  end
+
+  # Under any other circumstances, the game is not yet over. We know the game can't have too many
+  # rolls, because the `roll` method can not be called.
+  def score(_, _), do: @game_not_over_error
+
+  # Because it's possible for a score call to return an error, this method safely adds two scores.
+  defp add_scores(score_1, _) when is_tuple(score_1), do: score_1
+  defp add_scores(_, score_2) when is_tuple(score_2), do: score_2
+  defp add_scores(score_1, score_2), do: score_1 + score_2
 end
