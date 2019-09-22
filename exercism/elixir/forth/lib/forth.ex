@@ -5,8 +5,7 @@ defmodule Forth do
   Create a new evaluator.
   """
   @spec new() :: evaluator
-  def new() do
-  end
+  def new(), do: []
 
   @doc """
   Evaluate an input string, updating the evaluator state.
@@ -20,8 +19,7 @@ defmodule Forth do
   being the rightmost element in the string.
   """
   @spec format_stack(evaluator) :: String.t()
-  def format_stack(ev) do
-  end
+  def format_stack(stack), do: stack |> Enum.reverse |> Enum.join(" ")
 
   defmodule StackUnderflow do
     defexception []
