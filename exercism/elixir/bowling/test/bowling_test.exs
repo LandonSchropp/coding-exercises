@@ -11,6 +11,13 @@ defmodule BowlingTest do
     end)
   end
 
+  defp assert_error(value) do
+    assert(
+      is_tuple(value) && elem(value, 0) == :error,
+      "Expected #{ inspect(value) } to be an error, but it wasn't."
+    )
+  end
+
   test "should be able to score a game with all zeros" do
     game = Bowling.start()
     rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
