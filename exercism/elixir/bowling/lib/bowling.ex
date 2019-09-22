@@ -84,12 +84,14 @@ defmodule Bowling do
   # rolls, because the `roll` method can not be called.
   def score(_, _), do: @game_not_over_error
 
-  # Because rolls can be added to an error, this method safely adds rolls.
-  defp add_rolls(rolls, rolls_list)
+  # This function safely adds two lists of rolls. If one of the lists is an error, this function
+  # returns the error.
   defp add_rolls(_, error) when is_tuple(error), do: error
-  defp add_rolls(rolls, rolls_list), do: rolls ++ rolls_list
+  defp add_rolls(error, _) when is_tuple(error), do: error
+  defp add_rolls(rolls_1, rolls_2), do: rolls_1 ++ rolls_2
 
-  # Because it's possible for a score call to return an error, this method safely adds two scores.
+  # This function safe adds two scores together. If one of the scores is an error, this function
+  # returns the error.
   defp add_scores(score_1, _) when is_tuple(score_1), do: score_1
   defp add_scores(_, score_2) when is_tuple(score_2), do: score_2
   defp add_scores(score_1, score_2), do: score_1 + score_2
