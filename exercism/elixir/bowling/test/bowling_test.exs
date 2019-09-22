@@ -48,6 +48,15 @@ defmodule BowlingTest do
       assert Enum.slice(roll_reduce(List.duplicate(0, 18), [ 5, 5, 2 ]), -1..-1) == [ 2 ]
     end
 
+    test "when there are too many pins" do
+      assert_error roll_reduce([], [ 11 ])
+      assert_error roll_reduce([], [ 6, 5 ])
+    end
+
+    test "when the rolls are invalid" do
+      assert_error roll_reduce([], [ -1 ])
+    end
+
     test "returns an error when when there are too many rolls" do
       assert_error roll_reduce(List.duplicate(0, 18), [ 10, 5, 5, 0 ])
       assert_error roll_reduce(List.duplicate(0, 18), [ 10, 10, 10, 0 ])

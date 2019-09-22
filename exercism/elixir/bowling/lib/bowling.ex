@@ -24,11 +24,6 @@ defmodule Bowling do
   def roll([ _, _, _ ], _, 9, _), do: @game_over_error
   def roll([ roll_1, roll_2 ], _, 9, _) when roll_1 + roll_2 < 10, do: @game_over_error
 
-  # When there are no more rolls to recurse, the roll should be added to the end of the complete
-  # rolls list.
-  def roll([], roll, _, complete_rolls), do: complete_rolls ++ [ roll ]
-  def roll([ last_roll ], roll, _, complete_rolls), do: complete_rolls ++ [ last_roll, roll ]
-
   # When the frame is a strike, start the next frame.
   def roll([ 10 | rolls ], roll, frame, complete_rolls) do
     roll(rolls, roll, frame + 1, complete_rolls ++ [ 10 ])
@@ -36,6 +31,11 @@ defmodule Bowling do
 
   # Guard against invalid rolls in two-roll frames.
   def roll([ frame_roll ], roll, _, _) when frame_roll + roll > 10, do: @too_many_pins_error
+
+  # When there are no more rolls to recurse, the roll should be added to the end of the complete
+  # rolls list.
+  def roll([], roll, _, complete_rolls), do: complete_rolls ++ [ roll ]
+  def roll([ last_roll ], roll, _, complete_rolls), do: complete_rolls ++ [ last_roll, roll ]
 
   # When the frame has two rolls (and they're valid), add both to the list.
   def roll([ roll_1, roll_2 | rolls ], roll, frame, complete_rolls) do
