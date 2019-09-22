@@ -1,4 +1,7 @@
 defmodule Bowling do
+  @negative_roll_error { :error, "Negative roll is invalid" }
+  @too_many_pins_error { :error, "Pin count exceeds pins on the lane" }
+  @game_over_error { :error, "Cannot roll after game is over" }
 
   @doc """
   Creates a new game of bowling that can be used to store the results of the game.
@@ -11,32 +14,33 @@ defmodule Bowling do
   wrong with the given number of pins, in which case it returns a helpful message.
   """
   @spec roll(any, integer) :: any | String.t()
-  def roll(rolls, roll, frame_in_progress? \\ false)
-  def roll(_, roll, _) when roll < 0, do: {:error, "Negative roll is invalid"}
-  def roll(_, roll, _) when roll > 10, do: {:error, "Pin count exceeds pins on the lane"}
+  def roll(rolls, roll, frame \\ 0, complete_rolls \\ [])
 
-  # When there are no more rolls to recurse, the roll should be added to the end of the list.
-  def roll([], roll, _), do: [ roll ]
+  # Guard against invalid rolls.
+  def roll(_, roll, _, _) when roll < 0, do: @negative_roll_error
+  def roll(_, roll, _, _) when roll > 10, do: @too_many_pins_error
 
-  # When the pins for an in-progress roll add up to more than ten pins.
-  def roll([ last_roll ], roll, true) when last_roll + roll > 10 do
-    {:error, "Pin count exceeds pins on the lane"}
+  # Guard against too many rolls.
+  def roll([ _, _, _ ], _, 9, _), do: @game_over_error
+  def roll([ roll_1, roll_2 ], _, 9, _) when roll_1 + roll_2 < 10, do: @game_over_error
+
+  # When there are no more rolls to recurse, the roll should be added to the end of the complete
+  # rolls list.
+  def roll([], roll, _, complete_rolls), do: complete_rolls ++ [ roll ]
+  def roll([ last_roll ], roll, _, complete_rolls), do: complete_rolls ++ [ last_roll, roll ]
+
+  # When the frame is a strike, start the next frame.
+  def roll([ 10 | rolls ], roll, frame, complete_rolls) do
+    roll(rolls, roll, frame + 1, complete_rolls ++ [ 10 ])
   end
 
-  # When the roll is a strike, the next frame should not be in progress.
-  def roll([ last_roll | rolls ], 10, false) do
-    add_last_roll last_roll, roll(rolls, 10, false)
-  end
+  # Guard against invalid rolls in two-roll frames.
+  def roll([ frame_roll ], roll, _, _) when frame_roll + roll > 10, do: @too_many_pins_error
 
-  # When the frame contains two rolls, then the in progress status should flip.
-  def roll([ last_roll | rolls ], roll, in_progress) do
-    add_last_roll last_roll, roll(rolls, roll, !in_progress)
+  # When the frame has two rolls (and they're valid), add both to the list.
+  def roll([ roll_1, roll_2 | rolls ], roll, frame, complete_rolls) do
+    roll(rolls, roll, frame + 1, complete_rolls ++ [ roll_1, roll_2 ])
   end
-
-  # Safely adds a roll to the rolls list, returning errors if needed.
-  defp add_last_roll(last_roll, rolls_or_error)
-  defp add_last_roll(_, error) when is_map(error), do: error
-  defp add_last_roll(roll, rolls), do: [ roll | rolls ]
 
   @doc """
   Returns the score of a given game of bowling if the game is complete. If the game isn't complete,
