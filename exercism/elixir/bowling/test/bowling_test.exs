@@ -2,7 +2,13 @@ defmodule BowlingTest do
   use ExUnit.Case
 
   defp roll_reduce(game, rolls) do
-    Enum.reduce(rolls, game, fn roll, game -> Bowling.roll(game, roll) end)
+    Enum.reduce(rolls, game, fn roll, game ->
+      if is_tuple(game) do
+        game
+      else
+        Bowling.roll(game, roll)
+      end
+    end)
   end
 
   test "should be able to score a game with all zeros" do
