@@ -18,6 +18,44 @@ defmodule BowlingTest do
     )
   end
 
+  describe "Bowling.roll/2" do
+
+    test "returns a list with one roll when the frame is not complete" do
+      assert roll_reduce([], [ 0 ]) == [ 0 ]
+      assert roll_reduce([], [ 5 ]) == [ 5 ]
+    end
+
+    test "returns one frame when the rolls contain one complete frame" do
+      assert roll_reduce([], [ 0, 0 ]) == [ 0, 0 ]
+      assert roll_reduce([], [ 5, 4 ]) == [ 5, 4 ]
+      assert roll_reduce([], [ 6, 4 ]) == [ 6, 4 ]
+      assert roll_reduce([], [ 10 ]) == [ 10 ]
+    end
+
+    test "returns multiple frames when the rolls contain more than one frame" do
+      assert roll_reduce([], [ 0, 0, 0, 0, 0, 0 ]) == [ 0, 0, 0, 0, 0, 0 ]
+      assert roll_reduce([], [ 5, 4, 3, 2, 1, 0 ]) == [ 5, 4, 3, 2, 1, 0 ]
+      assert roll_reduce([], [ 6, 4, 7, 3, 8, 2 ]) == [ 6, 4, 7, 3, 8, 2 ]
+      assert roll_reduce([], [ 10, 10, 10 ]) == [ 10, 10, 10 ]
+      assert roll_reduce([], [ 10, 5, 5, 10, 5, 4, 10, 0, 0, 10, 0 ]) ==
+        [ 10, 5, 5, 10, 5, 4, 10, 0, 0, 10, 0 ]
+    end
+
+    test "returns a full game of rolls when the number of rolls are valid" do
+      assert Enum.slice(roll_reduce(List.duplicate(0, 18), [ 10, 5, 5 ]), -2..-1) == [ 5, 5 ]
+      assert Enum.slice(roll_reduce(List.duplicate(0, 18), [ 10, 10, 10 ]), -2..-1) == [ 10, 10 ]
+      assert Enum.slice(roll_reduce(List.duplicate(0, 18), [ 0, 10, 5 ]), -1..-1) == [ 5 ]
+      assert Enum.slice(roll_reduce(List.duplicate(0, 18), [ 5, 5, 2 ]), -1..-1) == [ 2 ]
+    end
+
+    test "returns an error when when there are too many rolls" do
+      assert_error roll_reduce(List.duplicate(0, 18), [ 10, 5, 5, 0 ])
+      assert_error roll_reduce(List.duplicate(0, 18), [ 10, 10, 10, 0 ])
+      assert_error roll_reduce(List.duplicate(0, 18), [ 0, 10, 5, 0 ])
+      assert_error roll_reduce(List.duplicate(0, 18), [ 5, 5, 2, 0 ])
+    end
+  end
+
   test "should be able to score a game with all zeros" do
     game = Bowling.start()
     rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
