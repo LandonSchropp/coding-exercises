@@ -57,7 +57,7 @@ defmodule Bowling do
 
   # Spare (last frame)
   def score([ roll_1, roll_2, roll_3 ], 10) when roll_1 + roll_2 == 10 do
-    10 + roll_3 * 2
+    10 + roll_3
   end
 
   # Open (last frame)
