@@ -15,32 +15,32 @@ defmodule Bowling do
   wrong with the given number of pins, in which case it returns a helpful message.
   """
   @spec roll(any, integer) :: any | String.t()
-  def roll(rolls, roll, frame \\ 0, complete_rolls \\ [])
+  def roll(rolls, roll, frame \\ 0)
 
   # Guard against invalid rolls.
-  def roll(_, roll, _, _) when roll < 0, do: @negative_roll_error
-  def roll(_, roll, _, _) when roll > 10, do: @too_many_pins_error
+  def roll(_, roll, _) when roll < 0, do: @negative_roll_error
+  def roll(_, roll, _) when roll > 10, do: @too_many_pins_error
 
   # Guard against too many rolls.
-  def roll([ _, _, _ ], _, 9, _), do: @game_over_error
-  def roll([ roll_1, roll_2 ], _, 9, _) when roll_1 + roll_2 < 10, do: @game_over_error
+  def roll([ _, _, _ ], _, 9), do: @game_over_error
+  def roll([ roll_1, roll_2 ], _, 9) when roll_1 + roll_2 < 10, do: @game_over_error
 
   # When the frame is a strike, start the next frame.
-  def roll([ 10 | rolls ], roll, frame, complete_rolls) do
-    roll(rolls, roll, frame + 1, complete_rolls ++ [ 10 ])
+  def roll([ 10 | rolls ], roll, frame) do
+    add_rolls [ 10 ], roll(rolls, roll, frame + 1)
   end
 
   # Guard against invalid rolls in two-roll frames.
-  def roll([ frame_roll ], roll, _, _) when frame_roll + roll > 10, do: @too_many_pins_error
+  def roll([ frame_roll ], roll, _) when frame_roll + roll > 10, do: @too_many_pins_error
 
   # When there are no more rolls to recurse, the roll should be added to the end of the complete
   # rolls list.
-  def roll([], roll, _, complete_rolls), do: complete_rolls ++ [ roll ]
-  def roll([ last_roll ], roll, _, complete_rolls), do: complete_rolls ++ [ last_roll, roll ]
+  def roll([], roll, _), do: [ roll ]
+  def roll([ last_roll ], roll, _), do: [ last_roll, roll ]
 
   # When the frame has two rolls (and they're valid), add both to the list.
-  def roll([ roll_1, roll_2 | rolls ], roll, frame, complete_rolls) do
-    roll(rolls, roll, frame + 1, complete_rolls ++ [ roll_1, roll_2 ])
+  def roll([ roll_1, roll_2 | rolls ], roll, frame) do
+    add_rolls [ roll_1, roll_2 ], roll(rolls, roll, frame + 1)
   end
 
   @doc """
@@ -83,6 +83,11 @@ defmodule Bowling do
   # Under any other circumstances, the game is not yet over. We know the game can't have too many
   # rolls, because the `roll` method can not be called.
   def score(_, _), do: @game_not_over_error
+
+  # Because rolls can be added to an error, this method safely adds rolls.
+  defp add_rolls(rolls, rolls_list)
+  defp add_rolls(_, error) when is_tuple(error), do: error
+  defp add_rolls(rolls, rolls_list), do: rolls ++ rolls_list
 
   # Because it's possible for a score call to return an error, this method safely adds two scores.
   defp add_scores(score_1, _) when is_tuple(score_1), do: score_1
