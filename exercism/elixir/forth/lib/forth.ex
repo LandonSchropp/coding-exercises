@@ -1,5 +1,5 @@
 defmodule Forth do
-  @opaque evaluator :: any
+  @opaque evaluator :: { list, %{ optional(String.t()) => any } }
 
   @doc """
   Create a new evaluator.
