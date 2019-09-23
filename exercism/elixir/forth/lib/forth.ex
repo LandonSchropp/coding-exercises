@@ -4,12 +4,6 @@ defmodule Forth do
   # Defines the default set of words that can be used when evaluating input strings.
   @words {}
 
-  # Iterpertation:
-  #
-  # * If the item is a digit, add it to the stack.
-  # * If the item is in the words map, then apply the item.
-  # * Otherwise, the operation is invalid.
-
   @doc """
   Create a new evaluator.
   """
@@ -30,7 +24,9 @@ defmodule Forth do
 
   # Parse the string into a list set of operations.
   def eval(evaluator, string) when is_binary(string) do
-    eval(evaluator, String.split(string, ~r/\W+/, trim: true))
+
+    # TODO: Determine why \W doesn't work in the regular expression.
+    eval(evaluator, String.split(string, ~r/[^\da-z]+/i, trim: true))
   end
 
   # Base case: When there are no operations, return the evaluator as is.
