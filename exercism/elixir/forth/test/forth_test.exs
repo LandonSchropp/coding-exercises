@@ -111,7 +111,6 @@ defmodule ForthTest do
     end
   end
 
-  @tag :pending
   test "over" do
     s =
       Forth.new()

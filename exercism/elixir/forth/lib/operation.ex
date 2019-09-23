@@ -23,6 +23,9 @@ defmodule Operation do
   def swap(stack) when length(stack) < 2, do: raise Error.StackUnderflow
   def swap([ first, second | stack ]), do: [ second, first | stack ]
 
+  def over(stack) when length(stack) < 2, do: raise Error.StackUnderflow
+  def over([ first, second | stack ]), do: [ second, first, second | stack ]
+
   def words do
     %{
       "+" => &Operation.add/1,
@@ -31,7 +34,8 @@ defmodule Operation do
       "/" => &Operation.divide/1,
       "dup" => &Operation.duplicate/1,
       "drop" => &Operation.drop/1,
-      "swap" => &Operation.swap/1
+      "swap" => &Operation.swap/1,
+      "over" => &Operation.over/1
     }
   end
 end

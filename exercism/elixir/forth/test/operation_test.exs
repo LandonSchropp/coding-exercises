@@ -97,4 +97,17 @@ defmodule OperationTest do
       assert Operation.swap([ 3, 4, 5, 6, 7 ]) == [ 4, 3, 5, 6, 7 ]
     end
   end
+
+  describe "over/1" do
+
+    test "raises a StackUnferflow error when the stack is too small" do
+      assert_raise Error.StackUnderflow, fn -> Operation.over([]) end
+      assert_raise Error.StackUnderflow, fn -> Operation.over([ 3 ]) end
+    end
+
+    test "over the top two elements on the stack" do
+      assert Operation.over([ 3, 4 ]) == [ 4, 3, 4 ]
+      assert Operation.over([ 3, 4, 5, 6, 7 ]) == [ 4, 3, 4, 5, 6, 7 ]
+    end
+  end
 end
