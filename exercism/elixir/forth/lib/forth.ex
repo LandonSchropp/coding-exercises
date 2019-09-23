@@ -27,6 +27,13 @@ defmodule Forth do
   """
   @spec eval(evaluator, String.t()) :: evaluator
 
+  @doc """
+  Returns true if the word is known to the evaluator.
+  """
+  def known_word?(evaluator, word) do
+    Enum.member?(Map.keys(@words), word)
+  end
+
   # Parse the string into a list set of operations.
   def eval(evaluator, string) when is_binary(string) do
 
@@ -40,8 +47,9 @@ defmodule Forth do
   # Recursive case: When there's an operation, evaluate it.
   def eval(evaluator, [ operation | operations ]) do
     cond do
-      Enum.member?(Map.keys(@words), operation) -> eval(operate(evaluator, operation), operations)
+      known_word?(evaluator, operation) -> eval(operate(evaluator, operation), operations)
       String.match?(operation, ~r/^\d+$/) -> eval(push(evaluator, operation), operations)
+      true -> raise Error.UnknownWord
     end
   end
 

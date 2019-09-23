@@ -190,7 +190,6 @@ defmodule ForthTest do
     end
   end
 
-  @tag :pending
   test "calling a non-existing word" do
     assert_raise Error.UnknownWord, fn ->
       Forth.new() |> Forth.eval("1 foo")
