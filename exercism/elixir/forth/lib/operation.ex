@@ -1,11 +1,5 @@
 defmodule Operation do
 
-  @operations %{
-    "+" => &Operation.add/1,
-    "-" => &Operation.subtract/1,
-    "*" => &Operation.multiply/1,
-    "/" => &Operation.divide/1,
-  }
 
   def add(stack) when length(stack) < 2, do: raise Error.StackUnderflow
   def add([ right, left | stack ]), do: [ left + right | stack ]
@@ -19,4 +13,13 @@ defmodule Operation do
   def divide(stack) when length(stack) < 2, do: raise Error.StackUnderflow
   def divide([ 0, _ | _ ]), do: raise Error.DivisionByZero
   def divide([ right, left | stack ]), do: [ div(left, right) | stack ]
+
+  def words do
+    %{
+      "+" => &Operation.add/1,
+      "-" => &Operation.subtract/1,
+      "*" => &Operation.multiply/1,
+      "/" => &Operation.divide/1
+    }
+  end
 end

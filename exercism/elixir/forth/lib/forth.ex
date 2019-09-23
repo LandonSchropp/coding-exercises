@@ -1,19 +1,11 @@
 defmodule Forth do
   @opaque evaluator :: any
 
-  # Defines the default set of words that can be used when evaluating input strings.
-  @words %{
-    "+" => &+/2,
-    "-" => &-/2,
-    "*" => &*/2,
-    "/" => &div/2
-  }
-
   @doc """
   Create a new evaluator.
   """
   @spec new() :: evaluator
-  def new(), do: { [], @words }
+  def new(), do: { [], Operation.words }
 
   @doc """
   Return the current stack as a string with the element on top of the stack being the rightmost
@@ -30,8 +22,8 @@ defmodule Forth do
   @doc """
   Returns true if the word is known to the evaluator.
   """
-  def known_word?(evaluator, word) do
-    Enum.member?(Map.keys(@words), word)
+  def known_word?({ stack, operations }, word) do
+    Enum.member?(Map.keys(operations), word)
   end
 
   # Parse the string into a list set of operations.
@@ -55,25 +47,13 @@ defmodule Forth do
   end
 
   # Pushes the number onto the stack in the evaluator.
-  defp push({ stack, words }, number) do
-    { [ elem(Integer.parse(number), 0) | stack ], words }
-  end
-
-  # Guard against division by zero.
-  defp operate({ [ 0, _ | _ ], _ }, "/") do
-    raise Error.DivisionByZero
+  defp push({ stack, operations }, number) do
+    { [ elem(Integer.parse(number), 0) | stack ], operations }
   end
 
   # Evaluate operations defined in the words hash.
-  defp operate({ stack, words }, word) do
-    operation = @words[word]
-    arity = Function.info(@words[word])[:arity]
-    { operands, remaining_stack } = Enum.split(stack, arity)
+  defp operate({ stack, operations }, word) do
 
-    if length(operands) < arity do
-      raise Error.StackUnderflow
-    end
-
-    { [ apply(operation, Enum.reverse(operands)) | remaining_stack ], words }
+    { operations[word].(stack), operations }
   end
 end
