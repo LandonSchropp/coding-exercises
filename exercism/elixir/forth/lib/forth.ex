@@ -29,9 +29,13 @@ defmodule Forth do
   # Parse the string into a list set of operations.
   def eval(evaluator, string) when is_binary(string) do
 
+    operations = string
+    |> String.downcase
+    |> String.split(~r/[^\da-z+*\-\/]+/, trim: true)
+
     # TODO: Determine why \W doesn't work in the regular expression.
     # TODO: Parse anything that looks like a number into a number so it can be pattern matched.
-    eval(evaluator, String.split(string, ~r/[^\da-z+*\-\/]+/i, trim: true))
+    eval(evaluator, operations)
   end
 
   # Base case: When there are no operations, return the evaluator as is.
