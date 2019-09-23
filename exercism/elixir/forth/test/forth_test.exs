@@ -41,7 +41,6 @@ defmodule ForthTest do
     assert s == "2"
   end
 
-  @tag :pending
   test "division by zero" do
     assert_raise Error.DivisionByZero, fn ->
       Forth.new() |> Forth.eval("4 2 2 - /")

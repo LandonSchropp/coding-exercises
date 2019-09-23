@@ -40,7 +40,7 @@ defmodule Forth do
   # Recursive case: When there's an operation, evaluate it.
   def eval(evaluator, [ operation | operations ]) do
     cond do
-      Enum.member?(Map.keys(@words), operation) -> eval(eval_primitive(evaluator, operation), operations)
+      Enum.member?(Map.keys(@words), operation) -> eval(operate(evaluator, operation), operations)
       String.match?(operation, ~r/^\d+$/) -> eval(push(evaluator, operation), operations)
     end
   end
@@ -48,7 +48,13 @@ defmodule Forth do
   # Pushes the number onto the stack in the evaluator.
   defp push({ stack, words }, number), do: { [ elem(Integer.parse(number), 0) | stack ], words }
 
-  defp eval_primitive({ [ first, second | stack ], words }, operation) do
+  # Guard against division by zero.
+  defp operate({ [ 0, _ | _ ], _ }, "/") do
+    raise Error.DivisionByZero
+  end
+
+  # Evaluate primitive operators.
+  defp operate({ [ first, second | stack ], words }, operation) do
     { [ @words[operation].(second, first) | stack ], words }
   end
 end
