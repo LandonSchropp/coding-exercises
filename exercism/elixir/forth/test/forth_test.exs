@@ -67,7 +67,6 @@ defmodule ForthTest do
     end
   end
 
-  @tag :pending
   test "drop" do
     s =
       Forth.new()

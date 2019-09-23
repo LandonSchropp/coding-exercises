@@ -17,13 +17,17 @@ defmodule Operation do
   def duplicate([]), do: raise Error.StackUnderflow
   def duplicate([ top | stack ]), do: [ top, top | stack ]
 
+  def drop([]), do: raise Error.StackUnderflow
+  def drop([ _ | stack ]), do: stack
+
   def words do
     %{
       "+" => &Operation.add/1,
       "-" => &Operation.subtract/1,
       "*" => &Operation.multiply/1,
       "/" => &Operation.divide/1,
-      "dup" => &Operation.duplicate/1
+      "dup" => &Operation.duplicate/1,
+      "drop" => &Operation.drop/1
     }
   end
 end

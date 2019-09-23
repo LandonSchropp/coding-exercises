@@ -72,4 +72,16 @@ defmodule OperationTest do
       assert Operation.duplicate([ 3, 4, 5, 6, 7 ]) == [ 3, 3, 4, 5, 6, 7 ]
     end
   end
+
+  describe "drop/1" do
+
+    test "raises a StackUnferflow error when the stack is too small" do
+      assert_raise Error.StackUnderflow, fn -> Operation.drop([]) end
+    end
+
+    test "removes the top value from the stack" do
+      assert Operation.drop([ 3 ]) == []
+      assert Operation.drop([ 3, 4, 5, 6, 7 ]) == [ 4, 5, 6, 7 ]
+    end
+  end
 end
