@@ -6,7 +6,6 @@ defmodule ForthTest do
     assert s == ""
   end
 
-  @tag :pending
   test "numbers just get pushed onto the stack" do
     s =
       Forth.new()
@@ -46,7 +45,7 @@ defmodule ForthTest do
 
   @tag :pending
   test "division by zero" do
-    assert_raise Forth.DivisionByZero, fn ->
+    assert_raise Error.DivisionByZero, fn ->
       Forth.new() |> Forth.eval("4 2 2 - /")
     end
   end
@@ -67,7 +66,7 @@ defmodule ForthTest do
 
     assert s == "1 2 2"
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("dup")
     end
   end
@@ -88,7 +87,7 @@ defmodule ForthTest do
 
     assert s == "1"
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("drop")
     end
   end
@@ -109,11 +108,11 @@ defmodule ForthTest do
 
     assert s == "1 3 2"
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("1 swap")
     end
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("swap")
     end
   end
@@ -134,11 +133,11 @@ defmodule ForthTest do
 
     assert s == "1 2 3 2"
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("1 over")
     end
 
-    assert_raise Forth.StackUnderflow, fn ->
+    assert_raise Error.StackUnderflow, fn ->
       Forth.new() |> Forth.eval("over")
     end
   end
@@ -189,14 +188,14 @@ defmodule ForthTest do
 
   @tag :pending
   test "defining a number" do
-    assert_raise Forth.InvalidWord, fn ->
+    assert_raise Error.InvalidWord, fn ->
       Forth.new() |> Forth.eval(": 1 2 ;")
     end
   end
 
   @tag :pending
   test "calling a non-existing word" do
-    assert_raise Forth.UnknownWord, fn ->
+    assert_raise Error.UnknownWord, fn ->
       Forth.new() |> Forth.eval("1 foo")
     end
   end
