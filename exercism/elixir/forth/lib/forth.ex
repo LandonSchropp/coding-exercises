@@ -5,7 +5,17 @@ defmodule Forth do
   Create a new evaluator.
   """
   @spec new() :: evaluator
-  def new(), do: { [], Operation.words }
+  def new() do
+    { [], %{} }
+    |> add_word("+", 2, &Operation.add/1)
+    |> add_word("-", 2, &Operation.subtract/1)
+    |> add_word("*", 2, &Operation.multiply/1)
+    |> add_word("/", 2, &Operation.divide/1)
+    |> add_word("dup", 1, &Operation.duplicate/1)
+    |> add_word("drop", 1, &Operation.drop/1)
+    |> add_word("swap", 2, &Operation.swap/1)
+    |> add_word("over", 2, &Operation.over/1)
+  end
 
   @doc """
   Return the current stack as a string with the element on top of the stack being the rightmost
@@ -57,7 +67,17 @@ defmodule Forth do
 
   # Evaluate operations defined in the words hash.
   defp operate({ stack, operations }, word) do
-
     { operations[word].(stack), operations }
+  end
+
+  # Adds a word to the evaluator.
+  defp add_word({ stack, operations }, word, arity, operation) do
+    {
+      stack,
+      Map.put(operations, word, fn
+        stack when length(stack) < arity -> raise Error.StackUnderflow
+        stack -> operation.(stack)
+      end)
+    }
   end
 end
