@@ -84,4 +84,17 @@ defmodule OperationTest do
       assert Operation.drop([ 3, 4, 5, 6, 7 ]) == [ 4, 5, 6, 7 ]
     end
   end
+
+  describe "swap/1" do
+
+    test "raises a StackUnferflow error when the stack is too small" do
+      assert_raise Error.StackUnderflow, fn -> Operation.swap([]) end
+      assert_raise Error.StackUnderflow, fn -> Operation.swap([ 3 ]) end
+    end
+
+    test "swaps the top two elements on the stack" do
+      assert Operation.swap([ 3, 4 ]) == [ 4, 3 ]
+      assert Operation.swap([ 3, 4, 5, 6, 7 ]) == [ 4, 3, 5, 6, 7 ]
+    end
+  end
 end

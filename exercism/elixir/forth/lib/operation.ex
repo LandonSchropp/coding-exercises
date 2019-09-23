@@ -20,6 +20,9 @@ defmodule Operation do
   def drop([]), do: raise Error.StackUnderflow
   def drop([ _ | stack ]), do: stack
 
+  def swap(stack) when length(stack) < 2, do: raise Error.StackUnderflow
+  def swap([ first, second | stack ]), do: [ second, first | stack ]
+
   def words do
     %{
       "+" => &Operation.add/1,
@@ -27,7 +30,8 @@ defmodule Operation do
       "*" => &Operation.multiply/1,
       "/" => &Operation.divide/1,
       "dup" => &Operation.duplicate/1,
-      "drop" => &Operation.drop/1
+      "drop" => &Operation.drop/1,
+      "swap" => &Operation.swap/1
     }
   end
 end
