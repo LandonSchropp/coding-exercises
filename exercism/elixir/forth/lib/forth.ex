@@ -17,37 +17,32 @@ defmodule Forth do
   def new(), do: { [], @words }
 
   @doc """
-  Evaluate an input string, updating the evaluator state.
-  """
-  @spec eval(evaluator, String.t()) :: evaluator
-  def eval(evaluator, string) when is_binary(string) do
-    elem(evaluator, 0)
-  end
-
-  @doc """
   Return the current stack as a string with the element on top of the stack being the rightmost
   element in the string.
   """
   @spec format_stack(evaluator) :: String.t()
   def format_stack(evaluator), do: evaluator |> elem(0) |> Enum.reverse |> Enum.join(" ")
 
-  defmodule StackUnderflow do
-    defexception []
-    def message(_), do: "stack underflow"
+  @doc """
+  Evaluate an input string, updating the evaluator state.
+  """
+  @spec eval(evaluator, String.t()) :: evaluator
+
+  # Parse the string into a list set of operations.
+  def eval(evaluator, string) when is_binary(string) do
+    eval(evaluator, String.split(string, ~r/\W+/, trim: true))
   end
 
-  defmodule InvalidWord do
-    defexception word: nil
-    def message(e), do: "invalid word: #{inspect(e.word)}"
+  # Base case: When there are no operations, return the evaluator as is.
+  def eval(evaluator, []), do: evaluator
+
+  # Recursive case: When there's an operation, evaluate it.
+  def eval(evaluator, [ operation | operations ]) do
+    cond do
+      String.match? operation, ~r/^\d+$/ -> eval(push(evaluator, operation), operations)
+    end
   end
 
-  defmodule UnknownWord do
-    defexception word: nil
-    def message(e), do: "unknown word: #{inspect(e.word)}"
-  end
-
-  defmodule DivisionByZero do
-    defexception []
-    def message(_), do: "division by zero"
-  end
+  # Pushes the number onto the stack in the evaluator.
+  defp push({ stack, words }, number), do: { [ number | stack ], words }
 end
