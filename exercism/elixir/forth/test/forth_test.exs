@@ -25,7 +25,6 @@ defmodule ForthTest do
     assert s == "1 2 3 4 5 6 7"
   end
 
-  @tag :pending
   test "basic arithmetic" do
     s =
       Forth.new()
