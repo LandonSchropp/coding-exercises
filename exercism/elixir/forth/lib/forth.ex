@@ -38,6 +38,7 @@ defmodule Forth do
   def eval(evaluator, string) when is_binary(string) do
 
     # TODO: Determine why \W doesn't work in the regular expression.
+    # TODO: Parse anything that looks like a number into a number so it can be pattern matched.
     eval(evaluator, String.split(string, ~r/[^\da-z+*\-\/]+/i, trim: true))
   end
 
@@ -45,24 +46,34 @@ defmodule Forth do
   def eval(evaluator, []), do: evaluator
 
   # Recursive case: When there's an operation, evaluate it.
-  def eval(evaluator, [ operation | operations ]) do
+  def eval(evaluator, [ word | words ]) do
     cond do
-      known_word?(evaluator, operation) -> eval(operate(evaluator, operation), operations)
-      String.match?(operation, ~r/^\d+$/) -> eval(push(evaluator, operation), operations)
+      known_word?(evaluator, word) -> eval(operate(evaluator, word), words)
+      String.match?(word, ~r/^\d+$/) -> eval(push(evaluator, word), words)
       true -> raise Error.UnknownWord
     end
   end
 
   # Pushes the number onto the stack in the evaluator.
-  defp push({ stack, words }, number), do: { [ elem(Integer.parse(number), 0) | stack ], words }
+  defp push({ stack, words }, number) do
+    { [ elem(Integer.parse(number), 0) | stack ], words }
+  end
 
   # Guard against division by zero.
   defp operate({ [ 0, _ | _ ], _ }, "/") do
     raise Error.DivisionByZero
   end
 
-  # Evaluate primitive operators.
-  defp operate({ [ first, second | stack ], words }, operation) do
-    { [ @words[operation].(second, first) | stack ], words }
+  # Evaluate operations defined in the words hash.
+  defp operate({ stack, words }, word) do
+    operation = @words[word]
+    arity = Function.info(@words[word])[:arity]
+    { operands, remaining_stack } = Enum.split(stack, arity)
+
+    if length(operands) < arity do
+      raise Error.StackUnderflow
+    end
+
+    { [ apply(operation, Enum.reverse(operands)) | remaining_stack ], words }
   end
 end
