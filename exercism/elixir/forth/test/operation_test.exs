@@ -60,4 +60,16 @@ defmodule OperationTest do
       assert Operation.divide([ 3, 4, 5, 6, 7 ]) == [ 1, 5, 6, 7 ]
     end
   end
+
+  describe "duplicate/1" do
+
+    test "raises a StackUnferflow error when the stack is too small" do
+      assert_raise Error.StackUnderflow, fn -> Operation.duplicate([]) end
+    end
+
+    test "returns the duplicate of the top value on the top of the stack" do
+      assert Operation.duplicate([ 3 ]) == [ 3, 3 ]
+      assert Operation.duplicate([ 3, 4, 5, 6, 7 ]) == [ 3, 3, 4, 5, 6, 7 ]
+    end
+  end
 end

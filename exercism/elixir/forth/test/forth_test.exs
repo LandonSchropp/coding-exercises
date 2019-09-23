@@ -47,7 +47,6 @@ defmodule ForthTest do
     end
   end
 
-  @tag :pending
   test "dup" do
     s =
       Forth.new()
