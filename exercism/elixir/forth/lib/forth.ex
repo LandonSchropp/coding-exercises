@@ -56,6 +56,19 @@ defmodule Forth do
     eval({ [ operation | stack ], words }, operations)
   end
 
+  # Recursive case: When the operation is defining a new word, add the word to the words map.
+  def eval({ stack, words }, [ ":" | operations ]) do
+
+    # Extract the word and word operations.
+    { [ word | word_operations ], [ ";" | operations ] } = Enum.split_with(operations, &(&1 != ";"))
+
+    # Update the words with thew new operation.
+    words = Map.put(words, word, fn (evaluator) -> eval(evaluator, word_operations) end)
+
+    # Recurse with the updated words.
+    eval({ stack, words }, operations)
+  end
+
   # Recursive case: When the operation is a word, evaluate it.
   def eval({ _, words } = evaluator, [ operation | operations ]) do
     if Map.has_key?(words, operation) do
