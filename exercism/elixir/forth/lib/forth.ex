@@ -6,15 +6,22 @@ defmodule Forth do
   """
   @spec new() :: evaluator
   def new() do
-    { [], %{} }
-    |> add_word("+", 2, &Operation.add/1)
-    |> add_word("-", 2, &Operation.subtract/1)
-    |> add_word("*", 2, &Operation.multiply/1)
-    |> add_word("/", 2, &Operation.divide/1)
-    |> add_word("dup", 1, &Operation.duplicate/1)
-    |> add_word("drop", 1, &Operation.drop/1)
-    |> add_word("swap", 2, &Operation.swap/1)
-    |> add_word("over", 2, &Operation.over/1)
+    {
+      [],
+      %{
+        "+" => decorate_operation(fn (a, b) -> [ a + b ] end),
+        "-" => decorate_operation(fn (a, b) -> [ a - b ] end),
+        "*" => decorate_operation(fn (a, b) -> [ a * b ] end),
+        "/" => decorate_operation(fn
+          (_, 0) -> raise Error.DivisionByZero
+          (a, b) -> [ div(a, b) ]
+        end),
+        "dup" => decorate_operation(fn (a) -> [ a, a ] end),
+        "drop" => decorate_operation(fn(_) -> [] end),
+        "swap" => decorate_operation(fn (a, b) -> [ a, b ] end),
+        "over" => decorate_operation(fn (a, b) -> [ a, b, a ] end),
+      }
+    }
   end
 
   @doc """
@@ -22,7 +29,7 @@ defmodule Forth do
   element in the string.
   """
   @spec format_stack(evaluator) :: String.t()
-  def format_stack(evaluator), do: evaluator |> elem(0) |> Enum.reverse |> Enum.join(" ")
+  def format_stack({ stack, _ }), do: stack |> Enum.reverse |> Enum.join(" ")
 
   @doc """
   Evaluate an input string, updating the evaluator state.
@@ -32,42 +39,30 @@ defmodule Forth do
   # Parse the string into a list set of operations.
   def eval(evaluator, string) when is_binary(string) do
 
+    # TODO: Determine why \W doesn't work in the regular expression.
     operations = string
     |> String.downcase
-    |> String.split(~r/[^\da-z+*\-\/]+/, trim: true)
+    |> String.split(~r/\s+/, trim: true)
     |> Enum.map(fn word -> parse_if_integer(word) end)
 
-    # TODO: Determine why \W doesn't work in the regular expression.
-    # TODO: Parse anything that looks like a number into a number so it can be pattern matched.
     eval(evaluator, operations)
   end
 
   # Base case: When there are no operations, return the evaluator as is.
   def eval(evaluator, []), do: evaluator
 
-  # Recursive case: When the value is a number, add it to the stack.
-  def eval({ stack, operations }, [ number | words ]) when is_number(number) do
-    eval({ [ number | stack ], operations }, words)
+  # Recursive case: When the operation is a number, add it to the stack.
+  def eval({ stack, words }, [ operation | operations ]) when is_number(operation) do
+    eval({ [ operation | stack ], words }, operations)
   end
 
-  # Recursive case: When there's an operation, evaluate it.
-  def eval({ stack, operations }, [ word | words ]) do
-    if Map.has_key?(operations, word) do
-      eval({ operations[word].(stack), operations }, words)
+  # Recursive case: When the operation is a word, evaluate it.
+  def eval({ _, words } = evaluator, [ operation | operations ]) do
+    if Map.has_key?(words, operation) do
+      eval(words[operation].(evaluator), operations)
     else
       raise Error.UnknownWord
     end
-  end
-
-  # Adds a word to the evaluator.
-  defp add_word({ stack, operations }, word, arity, operation) do
-    {
-      stack,
-      Map.put(operations, word, fn
-        stack when length(stack) < arity -> raise Error.StackUnderflow
-        stack -> operation.(stack)
-      end)
-    }
   end
 
   # Parses the word as an integer, but only if contains only digits.
@@ -76,6 +71,23 @@ defmodule Forth do
       elem(Integer.parse(word), 0)
     else
       word
+    end
+  end
+
+  # Creates an operation that modifies the stack in the evaluator. This function uses the arity of
+  # the provided function to determine if the stack has underflowed.
+  defp decorate_operation(operation_function) do
+    arity = Function.info(operation_function)[:arity]
+
+    fn ({ stack, operations }) ->
+
+      # Ensure the stack has enough elements to apply the operation function.
+      if length(stack) < arity do
+        raise Error.StackUnderflow
+      end
+
+      { parameters, tail } = Enum.split(stack, arity)
+      { apply(operation_function, Enum.reverse parameters) ++ tail, operations }
     end
   end
 end
