@@ -60,7 +60,10 @@ defmodule Forth do
   def eval({ stack, words }, [ ":" | operations ]) do
 
     # Extract the word and word operations.
-    { [ word | word_operations ], [ ";" | operations ] } = Enum.split_with(operations, &(&1 != ";"))
+    {
+      [ word | word_operations ],
+      [ ";" | operations ]
+    } = Enum.split_while(operations, &(&1 != ";"))
 
     # Ensure the word is not a number.
     if is_number word do
@@ -76,6 +79,7 @@ defmodule Forth do
 
   # Recursive case: When the operation is a word, evaluate it.
   def eval({ _, words } = evaluator, [ operation | operations ]) do
+
     if Map.has_key?(words, operation) do
       eval(words[operation].(evaluator), operations)
     else

@@ -167,7 +167,6 @@ defmodule ForthTest do
     assert s == "1 1"
   end
 
-  @tag :pending
   test "defining words with odd characters" do
     s =
       Forth.new()
