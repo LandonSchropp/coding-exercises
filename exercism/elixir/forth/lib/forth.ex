@@ -62,6 +62,11 @@ defmodule Forth do
     # Extract the word and word operations.
     { [ word | word_operations ], [ ";" | operations ] } = Enum.split_with(operations, &(&1 != ";"))
 
+    # Ensure the word is not a number.
+    if is_number word do
+      raise Error.InvalidWord
+    end
+
     # Update the words with thew new operation.
     words = Map.put(words, word, fn (evaluator) -> eval(evaluator, word_operations) end)
 
