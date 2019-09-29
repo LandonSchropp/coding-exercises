@@ -9,17 +9,17 @@ defmodule Forth do
     {
       [],
       %{
-        "+" => decorate_operation(fn (a, b) -> [ a + b ] end),
-        "-" => decorate_operation(fn (a, b) -> [ a - b ] end),
-        "*" => decorate_operation(fn (a, b) -> [ a * b ] end),
+        "+" => decorate_operation(&[ &1 + &2 ]),
+        "-" => decorate_operation(&[ &1 - &2 ]),
+        "*" => decorate_operation(&[ &1 * &2 ]),
         "/" => decorate_operation(fn
-          (_, 0) -> raise Error.DivisionByZero
-          (a, b) -> [ div(a, b) ]
+          _, 0 -> raise Error.DivisionByZero
+          a, b -> [ div(a, b) ]
         end),
-        "dup" => decorate_operation(fn (a) -> [ a, a ] end),
+        "dup" => decorate_operation(&[ &1, &1 ]),
         "drop" => decorate_operation(fn(_) -> [] end),
-        "swap" => decorate_operation(fn (a, b) -> [ a, b ] end),
-        "over" => decorate_operation(fn (a, b) -> [ a, b, a ] end),
+        "swap" => decorate_operation(&[ &1, &2 ]),
+        "over" => decorate_operation(&[ &1, &2, &1 ]),
       }
     }
   end
