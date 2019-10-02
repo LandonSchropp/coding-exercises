@@ -14,6 +14,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "empty graph" do
     assert %Graph{} ==
       expand_at_runtime(
@@ -22,6 +23,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "graph with one node" do
     assert %Graph{nodes: [{:a, []}]} ==
       expand_at_runtime(
@@ -31,6 +33,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "graph with one node with keywords" do
     assert %Graph{nodes: [{:a, [color: :green]}]} ==
       expand_at_runtime(
@@ -40,6 +43,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "graph with one edge" do
     assert %Graph{edges: [{:a, :b, []}]} ==
       expand_at_runtime(
@@ -49,6 +53,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "graph with just attribute" do
     assert %Graph{attrs: [foo: 1]} ==
       expand_at_runtime(
@@ -58,6 +63,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "graph with attributes" do
     assert %Graph{
       attrs: [bar: true, foo: 1, title: "Testing Attrs"],
@@ -79,6 +85,7 @@ defmodule DotTest do
     )
   end
 
+  @tag :pending
   test "keywords stuck to graph without space" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -89,6 +96,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "keywords stuck to node without space" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -99,6 +107,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "keywords stuck to edge without space" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -109,6 +118,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "invalid statement: int" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -120,6 +130,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "invalid statement: list" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -130,6 +141,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "invalid statement: qualified atom" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -140,6 +152,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "invalid statement: graph with no keywords" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -150,6 +163,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "two attribute lists" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -160,6 +174,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "non-keyword attribute list" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
@@ -170,6 +185,7 @@ defmodule DotTest do
     end
   end
 
+  @tag :pending
   test "int edge" do
     assert_raise ArgumentError, fn ->
       expand_at_runtime(
