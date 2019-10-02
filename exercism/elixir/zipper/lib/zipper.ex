@@ -25,13 +25,13 @@ defmodule Zipper do
   Get the left child of the focus node, if any.
   """
   @spec left(Zipper.t()) :: Zipper.t() | nil
-  def left({ binary_tree, zipper }), do: { binary_tree, zipper ++ [ :left ] }
+  def left(zipper), do: add_move(zipper, :left)
 
   @doc """
   Get the right child of the focus node, if any.
   """
   @spec right(Zipper.t()) :: Zipper.t() | nil
-  def right({ binary_tree, zipper }), do: { binary_tree, zipper ++ [ :right ] }
+  def right(zipper), do: add_move(zipper, :right)
 
   @doc """
   Get the parent of the focus node, if any.
@@ -52,6 +52,7 @@ defmodule Zipper do
   """
   @spec set_left(Zipper.t(), BinTree.t() | nil) :: Zipper.t()
   def set_left(zipper, left) do
+    add_move(zipper, left)
   end
 
   @doc """
@@ -59,5 +60,21 @@ defmodule Zipper do
   """
   @spec set_right(Zipper.t(), BinTree.t() | nil) :: Zipper.t()
   def set_right(zipper, right) do
+  end
+
+  # Safely adds a move to the zipper. If the move is illegal, this method will return nil.
+  defp add_move(zipper, move)
+  defp add_move({ %{ left: nil }, [] }, :left), do: nil
+  defp add_move({ %{ right: nil }, [] }, :right), do: nil
+  defp add_move({ binary_tree, [] }, move), do: { binary_tree, [ move ] }
+
+  defp add_move({ binary_tree, [ current_move | moves ] }, move) do
+    child_zipper = add_move({ Map.get(binary_tree, current_move), moves }, move)
+
+    if child_zipper != nil do
+      { binary_tree, [ current_move | elem(child_zipper, 1) ] }
+    else
+      nil
+    end
   end
 end
