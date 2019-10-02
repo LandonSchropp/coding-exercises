@@ -3,15 +3,13 @@ defmodule Zipper do
   Get a zipper focused on the root node.
   """
   @spec from_tree(BinTree.t()) :: Zipper.t()
-  def from_tree(bin_tree) do
-  end
+  def from_tree(binary_tree), do: { binary_tree, [] }
 
   @doc """
   Get the complete tree from a zipper.
   """
   @spec to_tree(Zipper.t()) :: BinTree.t()
-  def to_tree(zipper) do
-  end
+  def to_tree({ binary_tree, _ }), do: binary_tree
 
   @doc """
   Get the value of the focus node.
