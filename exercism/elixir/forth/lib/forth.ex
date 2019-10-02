@@ -13,7 +13,7 @@ defmodule Forth do
         "-" => decorate_operation(&[ &1 - &2 ]),
         "*" => decorate_operation(&[ &1 * &2 ]),
         "/" => decorate_operation(fn
-          (_, 0) -> raise Error.DivisionByZero
+          (_, 0) -> raise Forth.DivisionByZero
           (a, b) -> [ div(a, b) ]
         end),
         "dup" => decorate_operation(&[ &1, &1 ]),
@@ -67,7 +67,7 @@ defmodule Forth do
 
     # Ensure the word is not a number.
     if is_number word do
-      raise Error.InvalidWord
+      raise Forth.InvalidWord
     end
 
     # Update the words with thew new operation.
@@ -83,7 +83,7 @@ defmodule Forth do
     if Map.has_key?(words, operation) do
       eval(words[operation].(evaluator), operations)
     else
-      raise Error.UnknownWord, word: operation
+      raise Forth.UnknownWord, word: operation
     end
   end
 
@@ -105,11 +105,31 @@ defmodule Forth do
 
       # Ensure the stack has enough elements to apply the operation function.
       if length(stack) < arity do
-        raise Error.StackUnderflow
+        raise Forth.StackUnderflow
       end
 
       { parameters, tail } = Enum.split(stack, arity)
       { apply(operation_function, Enum.reverse parameters) ++ tail, operations }
     end
+  end
+
+  defmodule StackUnderflow do
+    defexception []
+    def message(_), do: "stack underflow"
+  end
+
+  defmodule InvalidWord do
+    defexception word: nil
+    def message(e), do: "invalid word: #{inspect(e.word)}"
+  end
+
+  defmodule UnknownWord do
+    defexception word: nil
+    def message(e), do: "unknown word: #{inspect(e.word)}"
+  end
+
+  defmodule DivisionByZero do
+    defexception []
+    def message(_), do: "division by zero"
   end
 end
