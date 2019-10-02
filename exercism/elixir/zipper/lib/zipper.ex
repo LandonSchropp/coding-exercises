@@ -15,22 +15,23 @@ defmodule Zipper do
   Get the value of the focus node.
   """
   @spec value(Zipper.t()) :: any
-  def value(zipper) do
+  def value({ binary_tree, [] }), do: binary_tree.value
+
+  def value({ binary_tree, [ move | zipper ] }) do
+    value({ Map.get(binary_tree, move), zipper })
   end
 
   @doc """
   Get the left child of the focus node, if any.
   """
   @spec left(Zipper.t()) :: Zipper.t() | nil
-  def left(zipper) do
-  end
+  def left({ binary_tree, zipper }), do: { binary_tree, zipper ++ [ :left ] }
 
   @doc """
   Get the right child of the focus node, if any.
   """
   @spec right(Zipper.t()) :: Zipper.t() | nil
-  def right(zipper) do
-  end
+  def right({ binary_tree, zipper }), do: { binary_tree, zipper ++ [ :right ] }
 
   @doc """
   Get the parent of the focus node, if any.
