@@ -37,8 +37,8 @@ defmodule Zipper do
   Get the parent of the focus node, if any.
   """
   @spec up(Zipper.t()) :: Zipper.t() | nil
-  def up(zipper) do
-  end
+  def up({ binary_tree, [] }), do: nil
+  def up({ binary_tree, zipper }), do: { binary_tree, Enum.drop(zipper, -1) }
 
   @doc """
   Set the value of the focus node.
