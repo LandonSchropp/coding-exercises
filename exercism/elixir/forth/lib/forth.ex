@@ -42,7 +42,7 @@ defmodule Forth do
     # TODO: Determine why \W doesn't work in the regular expression.
     operations = string
     |> String.downcase
-    |> String.split(~r/\s+/, trim: true)
+    |> String.split(~r/[[:space:][:cntrl:]]+/u, trim: true)
     |> Enum.map(fn word -> parse_if_integer(word) end)
 
     eval(evaluator, operations)
@@ -83,7 +83,7 @@ defmodule Forth do
     if Map.has_key?(words, operation) do
       eval(words[operation].(evaluator), operations)
     else
-      raise Error.UnknownWord
+      raise Error.UnknownWord, word: operation
     end
   end
 
