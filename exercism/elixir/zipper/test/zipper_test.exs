@@ -21,7 +21,6 @@ defmodule ZipperTest do
     assert t1() |> from_tree() |> left() |> right() |> value() == 3
   end
 
-  @tag :pending
   test "dead end" do
     assert t1() |> from_tree() |> left() |> left() == nil
   end
@@ -39,12 +38,10 @@ defmodule ZipperTest do
     assert value(zipper) == 3
   end
 
-  @tag :pending
   test "set_value" do
     assert t1() |> from_tree() |> left() |> set_value(5) |> to_tree() == t2()
   end
 
-  @tag :pending
   test "set_value after traversing up" do
     assert t1() |> from_tree() |> left() |> right() |> up() |> set_value(5) |> to_tree() == t2()
   end

@@ -44,23 +44,29 @@ defmodule Zipper do
   Set the value of the focus node.
   """
   @spec set_value(Zipper.t(), any) :: Zipper.t()
-  def set_value(zipper, value) do
+  def set_value({ binary_tree, [] }, value), do: { %{ binary_tree | value: value }, [] }
+
+  def set_value({ binary_tree, [ :left | moves ] } = zipper, value) do
+    { child_tree, _ } = set_value({ binary_tree.left, moves }, value)
+    set_left(zipper, child_tree)
+  end
+
+  def set_value({ binary_tree, [ :right | moves ] } = zipper, value) do
+    { child_tree, _ } = set_value({ binary_tree.right, moves }, value)
+    set_right(zipper, child_tree)
   end
 
   @doc """
   Replace the left child tree of the focus node.
   """
   @spec set_left(Zipper.t(), BinTree.t() | nil) :: Zipper.t()
-  def set_left(zipper, left) do
-    add_move(zipper, left)
-  end
+  def set_left({ binary_tree, moves }, left), do: { %{ binary_tree | left: left }, moves }
 
   @doc """
   Replace the right child tree of the focus node.
   """
   @spec set_right(Zipper.t(), BinTree.t() | nil) :: Zipper.t()
-  def set_right(zipper, right) do
-  end
+  def set_right({ binary_tree, moves }, right), do: { %{ binary_tree | right: right }, moves }
 
   # Safely adds a move to the zipper. If the move is illegal, this method will return nil.
   defp add_move(zipper, move)
