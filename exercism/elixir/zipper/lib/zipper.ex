@@ -47,11 +47,8 @@ defmodule Zipper do
   Set the value of the focus node.
   """
   @spec set_value(Zipper.t(), any) :: Zipper.t()
-  def set_value({ binary_tree, [] }, value), do: { %{ binary_tree | value: value }, [] }
-
-  def set_value({ binary_tree, [ move | moves ] } = zipper, value) do
-    # { child_tree, _ } = set_value({ binary_tree.left, moves }, value)
-    # set_left(zipper, child_tree)
+  def set_value([ { tree, move } | ancestors ], value) do
+    [ { Map.put(tree, :value, value), move } | ancestors ]
   end
 
   @doc """
